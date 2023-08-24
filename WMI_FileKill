@@ -1,4 +1,6 @@
-
+# 2d Lt Evan Monteith
+# VF23-4
+# 23 Aug 2023
 function Install-Persistence{
 
     $Payload = "taskkill /IM `"notepad.exe`" /F" 
