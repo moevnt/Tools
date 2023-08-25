@@ -1,0 +1,9 @@
+function Remove-Agents{
+    $EventFilterName = 'Cleanup'
+    $EventConsumerName = 'DataCleanup'
+    
+    Get-WmiObject -Namespace root/subscription -Class __FilterToConsumerBinding | where -Property Filter -ne '__EventFilter.Name=$EventFilterName' | Remove-WmiObject
+    Get-WmiObject -Namespace root/subscription -Class CommandLineEventConsumer| Where-Object -Property Name -ne $EventConsumerName | Remove-WmiObject
+    Get-WmiObject -Namespace root/subscription -Class __EventFilter| Where-Object -Property Name -ne $EventFilterName | Remove-WmiObject
+
+}
