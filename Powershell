@@ -1,0 +1,26 @@
+# Get service of a name
+get-service -Name <>
+
+# Get process
+get-process -Name <>
+
+# List files
+Get-ChildItem | select * | where -Property Name -eq <>
+
+# Win event logs
+Get-WinEvent -FilterHashtable @{LogName='Security'; ID=<>}
+Get-WinEvent -FilterHashtable @{LogName='Security';startTime="04/14/2025 00:00:00"; EndTime="04/16/2025 00:00:00"; ID=4697}
+
+# Windows Remoting
+$Creds <Creds>
+$target <target>
+Invoke-Command -Credential $creds -ComputerName $target -ScriptBlock {<>}
+
+# netstat
+netstat -anob
+
+# Run Keys
+Get-ChildItem -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run\
+
+# Scheduled Task
+get-scheduledtask
